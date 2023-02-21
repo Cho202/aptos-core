@@ -284,29 +284,24 @@ async fn process_raw_datastream_response(
         datastream::raw_datastream_response::Response::Data(data) => {
             let transaction_len = data.transactions.len();
             let start_version = data.transactions.first().unwrap().version;
+            let txns = data
+                .transactions
+                .iter()
+                .map(|txn| {
+                    let version = txn.version;
+                    let data = txn.encoded_proto_data.clone();
+                    let timestamp_in_seconds = match &txn.timestamp {
+                        Some(timestamp) => timestamp.seconds as u64,
+                        None => 0,
+                    };
+                    (version, data, timestamp_in_seconds)
+                })
+                .collect::<Vec<(u64, String, u64)>>();
 
-            for e in data.transactions {
-                let version = e.version;
-                let timestamp_in_seconds = match e.timestamp {
-                    Some(t) => t.seconds,
-                    // For Genesis block, there is no timestamp.
-                    None => 0,
-                };
-                // Push to cache.
-                match cache_operator
-                    .update_cache_transaction(
-                        version,
-                        e.encoded_proto_data,
-                        timestamp_in_seconds as u64,
-                    )
-                    .await
-                {
-                    Ok(_) => {},
-                    Err(e) => {
-                        anyhow::bail!("Update cache with version failed: {}", e);
-                    },
-                }
-            }
+            cache_operator
+                .update_cache_transactions(txns)
+                .await
+                .unwrap();
             Ok(GrpcDataStatus::ChunkDataOk {
                 start_version,
                 num_of_transactions: transaction_len as u64,
