@@ -7,7 +7,7 @@ yarn add aptos-tap-client
 
 ## Usage
 
-For Javascript or Typescript usage, check out the [`./examples`][examples] folder with ready-made `package.json` files to get you going quickly!
+For JavaScript or TypeScript usage, check out the [`./examples`][examples] folder with ready-made `package.json` files to get you going quickly!
 
 If you are using the types in a `commonjs` module, like in a Node app, you just have to enable `esModuleInterop`
 and `allowSyntheticDefaultImports` in your `tsconfig` for types compatibility:
