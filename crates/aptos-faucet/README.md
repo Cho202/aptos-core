@@ -9,8 +9,8 @@ This is a brief overview of the subdirectories to help you find what you're look
 - `move_scripts/`: Move scripts necessary for the MintFunder.
 - `metrics-server/`: The metrics server for the faucet service.
 - `doc/`: OpenAPI spec generated from the server definition.
-- `ts-client/`: Typescript client generated from the OpenAPI spec.
-- `migration/`: DB migrations for the PostgresRatelimitChecker.
+- `ts-client/`: TypeScript client generated from the OpenAPI spec.
+- `migration/`: Database migrations for the PostgresRatelimitChecker.
 - `entity/`: Generated ORM code for the PostgresRatelimitChecker.
 - `scripts/`: Scripts for helping with faucet development.
 
