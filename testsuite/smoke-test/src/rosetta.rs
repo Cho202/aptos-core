@@ -57,7 +57,12 @@ static DEFAULT_INTERVAL_DURATION: Duration = Duration::from_millis(DEFAULT_INTER
 pub async fn setup_test(
     num_nodes: usize,
     num_accounts: usize,
-) -> (LocalSwarm, CliTestFramework, JoinHandle<()>, RosettaClient) {
+) -> (
+    LocalSwarm,
+    CliTestFramework,
+    JoinHandle<anyhow::Result<()>>,
+    RosettaClient,
+) {
     let (swarm, cli, faucet) = SwarmBuilder::new_local(num_nodes)
         .with_init_genesis_config(Arc::new(|genesis_config| {
             genesis_config.epoch_duration_secs = 5;

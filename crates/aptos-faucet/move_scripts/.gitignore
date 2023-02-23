@@ -1,0 +1,8 @@
+*
+
+!.gitignore
+!sources
+!Move.toml
+
+!*/
+!build/Minter/bytecode_scripts/main.mv

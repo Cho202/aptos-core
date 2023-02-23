@@ -1,0 +1,18 @@
+---
+server_config:
+  api_path_base: ""
+metrics_server_config:
+  listen_port: 9105
+bypasser_configs:
+checker_configs:
+  type: "PostgresRatelimit"
+  database_address: "127.0.0.1"
+  database_name: "postgres"
+  database_user: "postgres"
+  max_requests_per_ip: 5
+  do_not_run_migrations: false
+funder_config:
+  type: "FakeFunder"
+handler_config:
+  use_helpful_errors: true
+  return_rejections_early: false
