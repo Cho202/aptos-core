@@ -17,7 +17,6 @@ This is a brief overview of the subdirectories to help you find what you're look
 In all cases, if a directory holds a crate, the name of that crate is `aptos-faucet-<directory>`. For example the name of the crate in `metrics-server/` is `aptos-faucet-metrics-server`.
 
 ## Summary
-
 The Aptos Faucet is a service that runs alongside a test network and mints coins for users to use in testing and development.
 
 Noteworthy features of the faucet include:
@@ -32,6 +31,21 @@ Noteworthy features of the faucet include:
   - MintFunder: This works like the legacy faucet. By default, on startup we use the root account to delegate minting capability to a new account and use that to create and mint coins for each fund request.
   - TransferFunder: Each faucet has its own account and uses that to create accounts and transfer funds into them. No minting.
 - All of these features are configurable using a config file.
+
+## Running
+To run the faucet, the simplest way to start is with this command:
+```
+cargo run -p aptos-faucet-service -- run-simple --key <private_key> --node-url <api_url> --chain-id TESTING
+```
+
+This command only lets you configure a subset of the full functionality of the faucet. You cannot enable any Checkers / Bypassers and it only supports the MintFunder. Generally it is intended for use with some kind of local swarm-based testnet or other such uses.
+
+For running the faucet in production, you will instead want to build a config file and run it like this:
+```
+cargo run -p aptos-faucet-service -- run -c <path_to_config_file>
+```
+
+You can find many examples of different config files in `configs/`.
 
 ## Developing
 Certain components of the faucet, e.g. the MinterFunder, rely on a Move script to operate. If you change one, or you're just building for the first time with a fresh repo, compile the Move script like this:
