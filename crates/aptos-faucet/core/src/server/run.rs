@@ -325,6 +325,42 @@ impl Run {
     }
 }
 
+/// This is used for the run-simple command, which lets you run a faucet with a config
+/// file, at the cost of less configurability.
+#[derive(Clone, Debug, Parser)]
+pub struct RunSimple {
+    #[clap(flatten)]
+    api_connection_config: ApiConnectionConfig,
+
+    /// What address to listen on.
+    #[clap(long, default_value = "0.0.0.0")]
+    pub listen_address: String,
+
+    /// What port to listen on.
+    #[clap(long, default_value_t = 8081)]
+    pub listen_port: u16,
+
+    #[clap(long)]
+    do_not_delegate: bool,
+}
+
+impl RunSimple {
+    pub async fn run_simple(&self) -> Result<()> {
+        let key = self
+            .api_connection_config
+            .get_key()
+            .context("Failed to load private key")?;
+        let run_config = RunConfig::build_for_cli(
+            self.api_connection_config.node_url.clone(),
+            self.listen_port,
+            FunderKeyEnum::Key(ConfigKey::new(key)),
+            self.do_not_delegate,
+            Some(self.api_connection_config.chain_id),
+        );
+        run_config.run().await
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
