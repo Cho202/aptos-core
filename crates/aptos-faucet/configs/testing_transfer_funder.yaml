@@ -3,8 +3,8 @@ server_config:
   api_path_base: ""
 metrics_server_config:
   listen_port: 9105
-bypasser_configs:
-checker_configs:
+bypasser_configs: []
+checker_configs: []
 funder_config:
   type: "TransferFunder"
   node_url: "https://fullnode.devnet.aptoslabs.com"

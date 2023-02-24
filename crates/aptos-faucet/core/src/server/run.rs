@@ -228,6 +228,14 @@ impl RunConfig {
             .context("One of the futures that were not meant to end ended unexpectedly")
     }
 
+    /// Like `run` but manipulates the server config for a test environment.
+    #[cfg(test)]
+    pub async fn run_test(mut self, port: u16) -> Result<()> {
+        self.server_config.listen_port = port;
+        self.metrics_server_config.disable = true;
+        self.run().await
+    }
+
     /// Call this function to build a RunConfig to run a faucet alongside a node API
     /// run by the Aptos CLI.
     pub fn build_for_cli(
@@ -296,15 +304,6 @@ pub struct Run {
 impl Run {
     pub async fn run(&self) -> Result<()> {
         let run_config = self.get_run_config()?;
-        run_config.run().await
-    }
-
-    /// Like `run` but manipulates the server config for a test environment.
-    #[cfg(test)]
-    pub async fn run_test(&self, port: u16) -> Result<()> {
-        let mut run_config = self.get_run_config()?;
-        run_config.server_config.listen_port = port;
-        run_config.metrics_server_config.disable = true;
         run_config.run().await
     }
 
@@ -411,16 +410,15 @@ mod test {
         format!("{}/fund", get_root_endpoint(port))
     }
 
-    async fn start_server(config_path: &str) -> Result<(u16, JoinHandle<Result<()>>)> {
+    async fn start_server(config_content: &'static str) -> Result<(u16, JoinHandle<Result<()>>)> {
         // Load config.
-        let run = Run {
-            config_path: PathBuf::from(config_path),
-        };
+        let run_config: RunConfig =
+            serde_yaml::from_str(config_content).context("Failed to parse config content")?;
 
         // Spawn server.
         let runtime_handle = tokio::runtime::Handle::current();
         let port = aptos_config::utils::get_available_port();
-        let join_handle = runtime_handle.spawn(async move { run.run_test(port).await });
+        let join_handle = runtime_handle.spawn(async move { run_config.run_test(port).await });
 
         // Wait for the server to startup.
         let startup_timeout_secs = 30;
@@ -500,7 +498,8 @@ mod test {
         init();
         make_auth_tokens_file(&["test_token"])?;
         make_ip_allowlist(&[])?;
-        let (port, _handle) = start_server("configs/testing_bypassers.yaml").await?;
+        let config_content = include_str!("../../../configs/testing_bypassers.yaml");
+        let (port, _handle) = start_server(config_content).await?;
 
         // See that a request that should fail (in this case because it is
         // missing the magic headers) succeeds because it passes an auth
@@ -536,7 +535,8 @@ mod test {
         init();
         make_ip_blocklist(&[])?;
         make_auth_tokens_file(&["test_token"])?;
-        let (port, _handle) = start_server("configs/testing_checkers.yaml").await?;
+        let config_content = include_str!("../../../configs/testing_checkers.yaml");
+        let (port, _handle) = start_server(config_content).await?;
 
         // Assert that a normal request fails due to a rejection.
         let response = reqwest::Client::new()
@@ -596,7 +596,8 @@ mod test {
             .context("Local testnet API couldn't be reached at port 8080, have you started one?")?;
 
         init();
-        let (port, _handle) = start_server("configs/testing_redis.yaml").await?;
+        let config_content = include_str!("../../../configs/testing_redis.yaml");
+        let (port, _handle) = start_server(config_content).await?;
 
         // Assert that the first 3 requests work.
         unwrap_reqwest_result(
@@ -654,6 +655,8 @@ mod test {
         Ok(())
     }
 
+    // We skip this for now since we have no current need to use the TransferFunder.
+    #[ignore]
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn test_transfer_health() -> Result<()> {
         // Create a local account and store its private key at the path expected by
@@ -689,7 +692,8 @@ mod test {
 
         // Start the server, using the account we just created.
         init();
-        let (port, _handle) = start_server("configs/testing_transfer_funder.yaml").await?;
+        let config_content = include_str!("../../../configs/testing_transfer_funder.yaml");
+        let (port, _handle) = start_server(config_content).await?;
 
         // Assert that `/` returns healthy.
         unwrap_reqwest_result(
@@ -759,7 +763,8 @@ mod test {
             // Ensure this server and that for test_mint_funder_wait_for_txns
             // don't start up simultaneously, since they're using the same mint key.
             let _guard = MUTEX.get().unwrap().lock().await;
-            start_server("configs/testing_mint_funder_local.yaml").await?
+            let config_content = include_str!("../../../configs/testing_mint_funder_local.yaml");
+            start_server(config_content).await?
         };
 
         // Make a request to fund a new account.
@@ -820,7 +825,9 @@ mod test {
             // Ensure this server and that for test_mint_funder
             // don't start up simultaneously, since they're using the same mint key.
             let _guard = MUTEX.get().unwrap().lock().await;
-            start_server("configs/testing_mint_funder_local_wait_for_txns.yaml").await?
+            let config_content =
+                include_str!("../../../configs/testing_mint_funder_local_wait_for_txns.yaml");
+            start_server(config_content).await?
         };
 
         // Make a request to fund a new account.

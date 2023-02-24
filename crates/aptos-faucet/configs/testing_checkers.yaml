@@ -3,7 +3,7 @@ server_config:
   api_path_base: ""
 metrics_server_config:
   listen_port: 9105
-bypasser_configs:
+bypasser_configs: []
 checker_configs:
   - type: "AuthToken"
     file: "/tmp/auth_tokens.txt"

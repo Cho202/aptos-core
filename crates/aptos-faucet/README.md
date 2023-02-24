@@ -15,3 +15,83 @@ This is a brief overview of the subdirectories to help you find what you're look
 - `scripts/`: Scripts for helping with faucet development.
 
 In all cases, if a directory holds a crate, the name of that crate is `aptos-faucet-<directory>`. For example the name of the crate in `metrics-server/` is `aptos-faucet-metrics-server`.
+
+## Summary
+
+The Aptos Faucet is a service that runs alongside a test network and mints coins for users to use in testing and development.
+
+Noteworthy features of the faucet include:
+- Checkers, which confirm that the given request is valid. Examples include:
+  - IP presence in a blocklist.
+  - Auth token.
+  - Google Captcha.
+- Built in ratelimiting, e.g. with a Redis backend, eliminating the need for something like haproxy in front of the faucet. These are also just Checkers.
+- Bypassers, the opposite of Checkers, which allow requests to bypass Checkers and Ratelimits if they meet some criteria. Examples include:
+  - IP presence in an allowlist.
+- Different funding backends. Examples include:
+  - MintFunder: This works like the legacy faucet. By default, on startup we use the root account to delegate minting capability to a new account and use that to create and mint coins for each fund request.
+  - TransferFunder: Each faucet has its own account and uses that to create accounts and transfer funds into them. No minting.
+- All of these features are configurable using a config file.
+
+## Developing
+Certain components of the faucet, e.g. the MinterFunder, rely on a Move script to operate. If you change one, or you're just building for the first time with a fresh repo, compile the Move script like this:
+```
+cd move_scripts
+aptos move compile
+```
+
+If you have issues with this, try deleting `~/.move`, updating your Aptos CLI, and changing the AptosFramework version.
+
+Then build the tap as normal (from the root of the repo):
+```
+cargo build
+```
+
+## Testing
+If you want to run the tests manually, follow these steps. Note that this is **not necessary** for release safety, the tests are run as part of CI already.
+
+For the test suite to pass, you must spin up a local testnet, notably without a faucet running (since we're testing the faucet here):
+```
+cargo run -p aptos -- node run-local-testnet --force-restart --assume-yes
+```
+
+You must then copy the mint key for that local testnet to the location the tests expect:
+```
+cp ~/.aptos/testnet/mint.key /tmp
+```
+
+As well as spin up a local Redis 6 ([installation guide](https://redis.io/docs/getting-started/)):
+```
+redis-server
+redis-cli flushall
+```
+
+Finally you can run the tests:
+```
+cargo test -p aptos-faucet-core
+```
+
+## Validating configs
+To ensure all the configs are valid, run this:
+```
+cd crates/aptos-faucet/configs
+ls . | xargs -I@ cargo run -p aptos-faucet-service -- validate-config -c @
+```
+
+## Generating the specs
+From the root:
+```
+cargo run -- generate-openapi -o doc/spec.yaml -f yaml
+cargo run -- generate-openapi -o doc/spec.json -f json
+```
+
+## Generating the TS client
+From `ts-client`:
+```
+yarn generate-client
+```
+
+## Internal
+Included here are links to resources for members of Aptos Labs:
+- [Runbook](https://www.notion.so/aptoslabs/Faucet-Runbook-fb2c579065cf477d856c0861a6a1216f)
+- [Deployment](https://github.com/aptos-labs/internal-ops/tree/main/infra/apps/tap)
