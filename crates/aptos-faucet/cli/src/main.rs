@@ -1,4 +1,5 @@
 // Copyright © Aptos Foundation
+// SPDX-License-Identifier: Apache-2.0
 
 use anyhow::{Context, Result};
 use aptos_faucet_core::funder::{ApiConnectionConfig, Funder, MintFunder};

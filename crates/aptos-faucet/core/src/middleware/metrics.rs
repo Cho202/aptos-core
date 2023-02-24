@@ -1,4 +1,5 @@
 // Copyright © Aptos Foundation
+// SPDX-License-Identifier: Apache-2.0
 
 use crate::endpoints::RejectionReason;
 use aptos_metrics_core::{

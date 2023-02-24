@@ -1,4 +1,5 @@
 // Copyright © Aptos Foundation
+// SPDX-License-Identifier: Apache-2.0
 
 use crate::endpoints::AptosTapError;
 use aptos_sdk::types::{account_address::AccountAddress, transaction::SignedTransaction};
