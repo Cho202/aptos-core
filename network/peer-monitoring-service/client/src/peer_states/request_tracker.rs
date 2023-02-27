@@ -11,6 +11,7 @@ use std::{
 #[derive(Clone, Debug)]
 pub struct RequestTracker {
     in_flight_request: bool, // If there is a request currently in-flight
+    last_request_time: Option<Instant>, // The most recent request time
     last_response_time: Option<Instant>, // The most recent response time
     num_consecutive_request_failures: u64, // The number of consecutive request failures
     request_interval_ms: u64, // The interval (ms) between requests
@@ -21,11 +22,22 @@ impl RequestTracker {
     pub fn new(request_interval_ms: u64, time_service: TimeService) -> Self {
         Self {
             in_flight_request: false,
+            last_request_time: None,
             last_response_time: None,
             num_consecutive_request_failures: 0,
             request_interval_ms,
             time_service,
         }
+    }
+
+    /// Returns the last request time
+    pub fn get_last_request_time(&self) -> Option<Instant> {
+        self.last_request_time
+    }
+
+    /// Returns the last response time
+    pub fn get_last_response_time(&self) -> Option<Instant> {
+        self.last_response_time
     }
 
     /// Returns the number of consecutive failures
@@ -40,7 +52,11 @@ impl RequestTracker {
 
     /// Updates the state to mark a request as having started
     pub fn request_started(&mut self) {
+        // Mark the request as in-flight
         self.in_flight_request = true;
+
+        // Update the last request time
+        self.last_request_time = Some(self.time_service.now());
     }
 
     /// Updates the state to mark a request as having completed
@@ -56,11 +72,11 @@ impl RequestTracker {
             return false;
         }
 
-        // Otherwise, check the last response time for freshness
-        match self.last_response_time {
-            Some(last_response_time) => {
+        // Otherwise, check the last request time for freshness
+        match self.last_request_time {
+            Some(last_request_time) => {
                 self.time_service.now()
-                    > last_response_time.add(Duration::from_millis(self.request_interval_ms))
+                    > last_request_time.add(Duration::from_millis(self.request_interval_ms))
             },
             None => true, // A request should be sent immediately
         }

@@ -101,6 +101,12 @@ impl LatencyInfoState {
             None
         }
     }
+
+    /// Returns a copy of the recorded latency pings for test purposes
+    #[cfg(test)]
+    pub fn get_recorded_latency_pings(&self) -> BTreeMap<u64, f64> {
+        self.recorded_latency_ping_durations_secs.clone()
+    }
 }
 
 impl StateValueInterface for LatencyInfoState {
