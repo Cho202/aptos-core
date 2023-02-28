@@ -1,7 +1,9 @@
 # Aptos Faucet
 
+The Aptos Faucet is a service that runs alongside a test network and mints coins for users to test and develop on Aptos.
+
 ## Subdirectories
-This is a brief overview of the subdirectories to help you find what you're looking for. For more information on each of these, see the README in that subdirectory.
+This is a brief overview of the subdirectories to help you find what you seek. For more information on each of these subdirectories, see the README in that subdirectory.
 
 - `core/`: All core logic, including the server, endpoint handlers, bypassers, checkers, funders, etc.
 - `service/`: The entrypoint for running the faucet as a service.
@@ -11,16 +13,15 @@ This is a brief overview of the subdirectories to help you find what you're look
 
 In all cases, if a directory holds a crate, the name of that crate is `aptos-faucet-<directory>`. For example the name of the crate in `metrics-server/` is `aptos-faucet-metrics-server`.
 
-## Summary
-The Aptos Faucet is a service that runs alongside a test network and mints coins for users to use in testing and development.
+## Features
 
 Noteworthy features of the faucet include:
 - Checkers, which confirm that the given request is valid. Examples include:
   - IP presence in a blocklist.
   - Auth token.
   - Google Captcha.
-- Built in ratelimiting, e.g. with a Redis backend, eliminating the need for something like haproxy in front of the faucet. These are also just Checkers.
-- Bypassers, the opposite of Checkers, which allow requests to bypass Checkers and Ratelimits if they meet some criteria. Examples include:
+- Built in rate limiting, e.g. with a [Redis](https://redis.io/) backend, eliminating the need for something like haproxy in front of the faucet. These are also just checkers.
+- Bypassers, the opposite of checkers, which allow requests to bypass checkers and rate limits if they meet some criteria. Examples include:
   - IP presence in an allowlist.
 - Different funding backends. Examples include:
   - MintFunder: This works like the legacy faucet. By default, on startup we use the root account to delegate minting capability to a new account and use that to create and mint coins for each fund request.
@@ -33,9 +34,9 @@ To run the faucet, the simplest way to start is with this command:
 cargo run -p aptos-faucet-service -- run-simple --key <private_key> --node-url <api_url> --chain-id TESTING
 ```
 
-This command only lets you configure a subset of the full functionality of the faucet. You cannot enable any Checkers / Bypassers and it only supports the MintFunder. Generally it is intended for use with some kind of local swarm-based testnet or other such uses.
+This command lets you configure only a subset of the full functionality of the faucet. You cannot enable any checkers / bypassers, and it supports only the MintFunder. Generally it is intended for use with some kind of local swarm-based testnet or other such uses.
 
-For running the faucet in production, you will instead want to build a config file and run it like this:
+For running the faucet in production, you will instead want to build a configuration file and run it like this:
 ```
 cargo run -p aptos-faucet-service -- run -c <path_to_config_file>
 ```
@@ -57,7 +58,7 @@ cargo build
 ```
 
 ## Testing
-If you want to run the tests manually, follow these steps. Note that this is **not necessary** for release safety, the tests are run as part of CI already.
+If you want to run the tests manually, follow these steps. Note that this is **not necessary** for release safety as the tests are run as part of continuous integration (CI) already.
 
 For the test suite to pass, you must spin up a local testnet, notably without a faucet running (since we're testing the faucet here):
 ```
