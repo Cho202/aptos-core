@@ -20,8 +20,8 @@ $ curl -H 'Content-Type: application/json' -X POST -d '{"amount": 5, "address": 
       "reason": "Captcha header CAPTCHA_KEY not found"
     },
     {
-      "code": "RequestNotFromPetra",
-      "reason": "Magic header what_wallet_my_guy not found"
+      "code": "RequestNotFromIntendedSource",
+      "reason": "Magic header what_wallet not found"
     }
   ],
   "txn_hashes": []
@@ -35,10 +35,10 @@ curl localhost:10212/request_captcha -v --output /tmp/image.png
 
 Take note of the captcha key in the header and solve the captcha image. Then make a request:
 ```
-curl -H 'Content-Type: application/json' -d '{"amount": 5, "address": "3c769ea16f38fdc218341c63ff8c1c5c7dcbb4d5d850675e92b09997fd36e8f0"}' -H 'CAPTCHA_KEY: 814861163' -H 'CAPTCHA_VALUE: Es9XE' -H 'what_wallet_my_guy: petra_of_course' localhost:10212/fund
+curl -H 'Content-Type: application/json' -d '{"amount": 5, "address": "3c769ea16f38fdc218341c63ff8c1c5c7dcbb4d5d850675e92b09997fd36e8f0"}' -H 'CAPTCHA_KEY: 814861163' -H 'CAPTCHA_VALUE: Es9XE' -H 'what_wallet: my_favorite_wallet' localhost:10212/fund
 ```
 
-See how this also includes headers to say "yessir I'm Petra".
+See how this also includes headers to identify the wallet.
 
 ## Manually testing Bypassers
 Run a local tap with a fake funder and in-memory storage:

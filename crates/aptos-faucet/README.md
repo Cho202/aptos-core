@@ -41,7 +41,7 @@ For running the faucet in production, you will instead want to build a configura
 cargo run -p aptos-faucet-service -- run -c <path_to_config_file>
 ```
 
-You can find many examples of different config files in `configs/`.
+You can find many examples of different config files in [configs/](configs/).
 
 ## Developing
 Certain components of the faucet, e.g. the MinterFunder, rely on a Move script to operate. If you change it, compile the Move script like this (from the root of the repo):
@@ -100,8 +100,3 @@ From `ts-client`:
 ```
 yarn generate-client
 ```
-
-## Internal
-Included here are links to resources for members of Aptos Labs:
-- [Runbook](https://www.notion.so/aptoslabs/Faucet-Runbook-fb2c579065cf477d856c0861a6a1216f)
-- [Deployment](https://github.com/aptos-labs/internal-ops/tree/main/infra/apps/tap)
