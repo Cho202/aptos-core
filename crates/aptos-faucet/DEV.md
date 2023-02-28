@@ -1,6 +1,6 @@
 # Aptos Faucet
 
-This doc contains information more relevant to the development of more obscure parts of the faucet.
+This doc contains information relevant to the development of more obscure parts of the faucet.
 
 ## Manually testing Checkers
 Run a local tap with a fake funder and in-memory storage:
@@ -46,7 +46,7 @@ Run a local tap with a fake funder and in-memory storage:
 cargo run -- run -c configs/testing_bypassers.yaml
 ```
 
-See that a request that should fail (in this case bc it's missing the magic headers) succeeds:
+See that a request that should fail (in this case because it's missing the magic headers) succeeds:
 ```
 $ curl -H 'Content-Type: application/json' -X POST -d '{"amount": 5, "address": "3c769ea16f38fdc218341c63ff8c1c5c7dcbb4d5d850675e92b09997fd36e8f0"}' localhost:10212/fund
 []
@@ -58,13 +58,13 @@ From the server:
 ```
 
 ## Manually testing PostgresStorage
-First, make sure you've got postgres installed and you know your user, database, etc. The tap assumes some reasonable defaults.
+First, make sure you've got [postgres](https://www.postgresql.org/) installed and you know your user, database, etc. The tap assumes some reasonable defaults.
 
 Run the tap with postgres storage and a fake funder.
 ```
 cargo run -- run -c configs/testing_postgres.yaml
 ```
-By default this will handle running the DB migrations for you.
+By default this will handle running the database migrations for you.
 
 Submit a request:
 ```
