@@ -43,9 +43,7 @@ members = [
     "crates/aptos-crypto-derive",
     "crates/aptos-faucet/cli",
     "crates/aptos-faucet/core",
-    "crates/aptos-faucet/entity",
     "crates/aptos-faucet/metrics-server",
-    "crates/aptos-faucet/migration",
     "crates/aptos-faucet/service",
     "crates/aptos-genesis",
     "crates/aptos-id-generator",
@@ -217,8 +215,6 @@ aptos-faucet-cli = { path = "crates/aptos-faucet/cli" }
 aptos-faucet-core = { path = "crates/aptos-faucet/core" }
 aptos-faucet-service = { path = "crates/aptos-faucet/service" }
 aptos-faucet-metrics-server = { path = "crates/aptos-faucet/metrics-server" }
-aptos-faucet-entity = { path = "crates/aptos-faucet/entity" }
-aptos-faucet-migration = { path = "crates/aptos-faucet/migration" }
 aptos-fallible = { path = "crates/fallible" }
 aptos-forge = { path = "testsuite/forge" }
 aptos-framework = { path = "aptos-move/framework" }
@@ -446,7 +442,6 @@ ripemd = "0.1.1"
 rocksdb = { version = "0.19.0", features = ["lz4"] }
 rstest = "0.15.0"
 rusty-fork = "0.3.0"
-sea-orm = { version = "0.11.0", features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"] }
 sha-1 = "0.10.0"
 sha2 = "0.9.3"
 sha3 = "0.9.1"

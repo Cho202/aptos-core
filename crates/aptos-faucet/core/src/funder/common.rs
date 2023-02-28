@@ -391,14 +391,14 @@ impl GasUnitPriceManager {
         // If we're still within the TTL, just return the current value.
         if let Some(last_updated) = *self.last_updated.read().await {
             if now.duration_since(last_updated) < self.cache_ttl {
-                return Ok(self.gas_unit_price.load(Ordering::Relaxed));
+                return Ok(self.gas_unit_price.load(Ordering::Acquire));
             }
         }
 
         // We're beyond the TTL, update the value and last_updated.
         let mut last_updated = self.last_updated.write().await;
         let new_price = self.fetch_gas_unit_price().await?;
-        self.gas_unit_price.store(new_price, Ordering::Relaxed);
+        self.gas_unit_price.store(new_price, Ordering::Release);
         *last_updated = Some(now);
 
         info!(gas_unit_price = new_price, event = "gas_unit_price_updated");

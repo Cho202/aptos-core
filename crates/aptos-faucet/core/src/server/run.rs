@@ -229,7 +229,7 @@ impl RunConfig {
     }
 
     /// Like `run` but manipulates the server config for a test environment.
-    #[cfg(test)]
+    #[cfg(feature = "integration-tests")]
     pub async fn run_test(mut self, port: u16) -> Result<()> {
         self.server_config.listen_port = port;
         self.metrics_server_config.disable = true;
@@ -275,7 +275,7 @@ impl RunConfig {
                     None,    // gas_unit_price_override
                     500_000, // max_gas_amount
                     30,      // transaction_expiration_secs
-                    true,    // wait_for_transactions
+                    false,   // wait_for_transactions
                 ),
                 mint_account_address: Some(aptos_test_root_address()),
                 do_not_delegate,
@@ -361,7 +361,10 @@ impl RunSimple {
     }
 }
 
-#[cfg(test)]
+// We hide these tests behind a feature flag because these are not standard unit tests,
+// these are integration tests that rely on a variety of outside pieces such as a local
+// testnet and a running Redis instance.
+#[cfg(feature = "integration-tests")]
 mod test {
     use super::*;
     use crate::{

@@ -6,13 +6,8 @@ This is a brief overview of the subdirectories to help you find what you're look
 - `core/`: All core logic, including the server, endpoint handlers, bypassers, checkers, funders, etc.
 - `service/`: The entrypoint for running the faucet as a service.
 - `cli/`: CLI for executing the core MintFunder code from the service.
-- `move_scripts/`: Move scripts necessary for the MintFunder.
 - `metrics-server/`: The metrics server for the faucet service.
 - `doc/`: OpenAPI spec generated from the server definition.
-- `ts-client/`: TypeScript client generated from the OpenAPI spec.
-- `migration/`: Database migrations for the PostgresRatelimitChecker.
-- `entity/`: Generated ORM code for the PostgresRatelimitChecker.
-- `scripts/`: Scripts for helping with faucet development.
 
 In all cases, if a directory holds a crate, the name of that crate is `aptos-faucet-<directory>`. For example the name of the crate in `metrics-server/` is `aptos-faucet-metrics-server`.
 
@@ -48,9 +43,9 @@ cargo run -p aptos-faucet-service -- run -c <path_to_config_file>
 You can find many examples of different config files in `configs/`.
 
 ## Developing
-Certain components of the faucet, e.g. the MinterFunder, rely on a Move script to operate. If you change one, or you're just building for the first time with a fresh repo, compile the Move script like this:
+Certain components of the faucet, e.g. the MinterFunder, rely on a Move script to operate. If you change it, compile the Move script like this (from the root of the repo):
 ```
-cd move_scripts
+cd aptos-move/move-examples/scripts/minter
 aptos move compile
 ```
 
@@ -82,7 +77,7 @@ redis-cli flushall
 
 Finally you can run the tests:
 ```
-cargo test -p aptos-faucet-core
+cargo test -p aptos-faucet-core --features integration-tests
 ```
 
 ## Validating configs

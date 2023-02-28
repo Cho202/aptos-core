@@ -27,8 +27,9 @@ use serde::{Deserialize, Serialize};
 use std::time::Duration;
 use tokio::sync::RwLock;
 
-static MINTER_SCRIPT: &[u8] =
-    include_bytes!("../../../move_scripts/build/Minter/bytecode_scripts/main.mv");
+static MINTER_SCRIPT: &[u8] = include_bytes!(
+    "../../../../../aptos-move/move-examples/scripts/minter/build/Minter/bytecode_scripts/main.mv"
+);
 
 use super::{
     common::{

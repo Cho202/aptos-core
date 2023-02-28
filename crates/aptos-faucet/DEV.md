@@ -2,23 +2,6 @@
 
 This doc contains information more relevant to the development of more obscure parts of the faucet.
 
-## Changing the DB schema
-In this project we do a "schema first" model. So you change the schema under `migration/` and the regenerate the entities based on that under `entity/`.
-
-To destructively change the DB schema (e.g. if you haven't deployed yet), go change the migration files in `migration/src/`.
-
-To non-destructively evolve the schema, you instead want to [generate a new schema](https://www.sea-ql.org/SeaORM/docs/migration/writing-migration/).
-
-After this, you should [apply the migrations](https://www.sea-ql.org/SeaORM/docs/migration/running-migration/). Entity generation reads the tables in the DB, not the migration definitions in code, so you need to do this first before generating entities:
-```
-sea-orm-cli migrate up
-```
-
-Once you've done that, you need to [regenerate the entities](https://www.sea-ql.org/SeaORM/docs/generate-entity/sea-orm-cli/).
-```
-sea-orm-cli generate entity -o entity/src
-```
-
 ## Manually testing Checkers
 Run a local tap with a fake funder and in-memory storage:
 ```

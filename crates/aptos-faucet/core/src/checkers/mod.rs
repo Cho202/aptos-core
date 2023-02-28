@@ -6,14 +6,10 @@ mod google_captcha;
 mod ip_blocklist;
 mod magic_header;
 mod memory_ratelimit;
-#[cfg(feature = "db_ratelimiter_checker")]
-mod postgres_ratelimit;
 mod redis_ratelimit;
 mod tap_captcha;
 mod traits;
 
-#[cfg(feature = "db_based_ratelimiter")]
-use self::postgres_ratelimit::{PostgresRatelimitChecker, PostgresRatelimitCheckerConfig};
 pub use self::tap_captcha::CaptchaManager;
 use self::{
     auth_token::AuthTokenChecker,
@@ -50,10 +46,6 @@ pub enum CheckerConfig {
     /// Basic in memory ratelimiter that allows a single successful request per IP.
     MemoryRatelimit(MemoryRatelimitCheckerConfig),
 
-    /// Ratelimiter that uses SeaORM to interface with a postgres database to store requests.
-    #[cfg(feature = "db_based_ratelimiter")]
-    PostgresRatelimit(PostgresRatelimitCheckerConfig),
-
     /// Ratelimiter that uses Redis.
     RedisRatelimit(RedisRatelimitCheckerConfig),
 
@@ -72,10 +64,6 @@ impl CheckerConfig {
             Self::IpBlocklist(config) => Ok(Box::new(IpBlocklistChecker::new(config)?)),
             Self::MagicHeader(config) => Ok(Box::new(MagicHeaderChecker::new(config)?)),
             Self::MemoryRatelimit(config) => Ok(Box::new(MemoryRatelimitChecker::new(config))),
-            #[cfg(feature = "db_based_ratelimiter")]
-            Self::PostgresRatelimit(config) => {
-                Ok(Box::new(PostgresRatelimitChecker::new(config).await?))
-            },
             Self::RedisRatelimit(config) => Ok(Box::new(RedisRatelimitChecker::new(config).await?)),
             Self::TapCaptcha(config) => {
                 Ok(Box::new(TapCaptchaChecker::new(config, captcha_manager)?))
