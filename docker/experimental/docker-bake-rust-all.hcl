@@ -52,6 +52,10 @@ group "forge-images" {
   targets = ["validator-testing", "tools", "forge"]
 }
 
+group "build" {
+  targets = ["aptos-node-builder", "tools-builder"]
+}
+
 target "debian-base" {
   dockerfile = "docker/experimental/debian-base.Dockerfile"
   context = "."
