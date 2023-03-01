@@ -12,6 +12,7 @@ use aptos_indexer_grpc_utils::{
 use aptos_moving_average::MovingAverage;
 use std::time::Duration;
 
+// If the version is ahead of the cache head, retry after a short sleep.
 const AHEAD_OF_CACHE_SLEEP_DURATION_IN_MILLIS: u64 = 1000;
 
 /// Processor tails the data in cache and stores the data in file store.
@@ -32,8 +33,8 @@ impl Processor {
         }
     }
 
-    /// Bootstrap the processor, including creating the redis connection and file store operator.
-    async fn bootstrap(&mut self) {
+    /// Init the processor, including creating the redis connection and file store operator.
+    async fn init(&mut self) {
         // Connection to redis is a hard dependency for file store processor.
         let conn = redis::Client::open(format!("redis://{}", self.config.redis_address))
             .expect("Create redis client failed.")
@@ -49,7 +50,7 @@ impl Processor {
 
         let file_store_operator =
             FileStoreOperator::new(self.config.file_store_bucket_name.clone());
-        file_store_operator.bootstrap().await;
+        file_store_operator.verify_storage_bucket_existence().await;
 
         self.cache_operator = Some(cache_operator);
         self.file_store_processor = Some(file_store_operator);
@@ -58,7 +59,7 @@ impl Processor {
 
     // Starts the processing.
     pub async fn run(&mut self) {
-        self.bootstrap().await;
+        self.init().await;
         let cache_chain_id = self.cache_chain_id.unwrap();
 
         // If file store and cache chain id don't match, panic.

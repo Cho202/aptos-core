@@ -22,8 +22,8 @@ pub(crate) struct TransactionsFile {
     // The version of the first transaction in the file.
     // It must be the same as the starting_version in the file name.
     pub starting_version: u64,
-    /// Each transaction is a encoded string for Transaction protobuf.
-    /// Expected size of each vector is BLOB_STORAGE_SIZE, i.e., 1_000.
+    // Each transaction is a encoded string for Transaction protobuf.
+    // Expected size of each vector is BLOB_STORAGE_SIZE, i.e., 1_000.
     pub transactions: Vec<String>,
 }
 
@@ -32,9 +32,9 @@ pub(crate) struct TransactionsFile {
 #[derive(Serialize, Deserialize, Copy, Clone, Debug)]
 pub struct FileStoreMetadata {
     pub chain_id: u64,
-    /// The size of each file folder, BLOB_STORAGE_SIZE, i.e., 1_000.
+    // The size of each file folder, BLOB_STORAGE_SIZE, i.e., 1_000.
     pub file_folder_size: usize,
-    /// The current version of the file store.
+    // The current version of the file store.
     pub version: u64,
 }
 
@@ -66,7 +66,7 @@ impl FileStoreOperator {
     }
 
     /// Bootstraps the file store operator. This is required before any other operations.
-    pub async fn bootstrap(&self) {
+    pub async fn verify_storage_bucket_existence(&self) {
         // Verifies the bucket exists.
         Bucket::read(&self.bucket_name)
             .await

@@ -83,7 +83,7 @@ impl Worker {
 
             // 1. Fetch metadata.
             let file_store_operator = FileStoreOperator::new(self.file_store_bucket_name.clone());
-            file_store_operator.bootstrap().await;
+            file_store_operator.verify_storage_bucket_existence().await;
             let mut starting_version = 0;
             let file_store_metadata = file_store_operator.get_file_store_metadata().await;
 
@@ -104,7 +104,6 @@ impl Worker {
             // 2. Start streaming RPC.
             let request = tonic::Request::new(RawDatastreamRequest {
                 starting_version,
-                // Worker fetches all transactions without end.
                 ..Default::default()
             });
 
