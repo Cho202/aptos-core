@@ -230,8 +230,8 @@ jobs:
   forge-consensus-only-perf-test:
     needs:
       [rust-images-consensus-only-perf-test, determine-docker-build-metadata]
-    if: |
-      contains(github.event.pull_request.labels.*.name, 'CICD:run-consensus-only-perf-test')
+    # if: |
+    #   contains(github.event.pull_request.labels.*.name, 'CICD:run-consensus-only-perf-test')
     uses: aptos-labs/aptos-core/.github/workflows/workflow-run-forge.yaml@main
     secrets: inherit
     with:
