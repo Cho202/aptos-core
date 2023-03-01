@@ -153,10 +153,10 @@ async fn test_peers_with_ready_subscriptions() {
         time_service.clone(),
     )
     .unwrap();
-    assert_eq!(
-        peers_with_ready_subscriptions,
-        vec![(peer_network_1, synced_ledger_info)]
-    );
+    assert_eq!(peers_with_ready_subscriptions, vec![(
+        peer_network_1,
+        synced_ledger_info
+    )]);
 
     // Manually remove subscription 1 from the map
     data_subscriptions.lock().remove(&peer_network_1);

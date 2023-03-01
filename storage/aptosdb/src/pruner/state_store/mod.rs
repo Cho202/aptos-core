@@ -226,8 +226,9 @@ impl StateMerklePruner<StaleNodeIndexCrossEpochSchema> {
         let target_version = 1; // The genesis version is 0. Delete [0,1) (exclusive)
         let max_version = 1; // We should only be pruning a single version
 
-        let state_merkle_pruner =
-            pruner_utils::create_state_merkle_pruner::<StaleNodeIndexCrossEpochSchema>(state_merkle_db);
+        let state_merkle_pruner = pruner_utils::create_state_merkle_pruner::<
+            StaleNodeIndexCrossEpochSchema,
+        >(state_merkle_db);
         state_merkle_pruner.set_target_version(target_version);
 
         let min_readable_version = state_merkle_pruner.min_readable_version();
