@@ -19,13 +19,16 @@ use std::collections::{HashMap, VecDeque};
 /// non-conflicting. In other words, if the input block has only one transaction per sender, the output
 /// ordering will remain unchanged.
 ///
-/// In order to make the look up faster, it creates an index of contiguous set of transactions by
-/// senders. This makes searching for non-conflicting transactions much faster as compared to brute
-/// force approach.
-///
-/// Another optimization introduced is the `look_ahead_sender_window` - this limits the number of senders
-/// to check to find non-conflicting transactions before giving up. This is needed to ensure the shuffling
-/// is not O(n*2) even in the worst case.
+/// The shuffling algorithm is O(n) and following is the pseudo code for it.
+/// loop:
+///   if a sender fell out of the sliding window in previous iteration,
+///      then: we add the first pending transaction from that sender to the block
+///   else while we have transactions to process in the original transaction order
+///         take a new one,
+///         if it conflicts, add to the pending set
+///         else we add it to the block
+///   else
+///       take the first transaction from the pending transactions and add it to the block
 
 pub struct SenderAwareShuffler {
     conflict_window_size: usize,
@@ -135,7 +138,7 @@ impl PendingTransactions {
     }
 }
 
-/// A state full data structure maintained by the transaction shuffer during shuffling. On a
+/// A state full data structure maintained by the transaction shuffler during shuffling. On a
 /// high level, it maintains a sliding window of the conflicting transactions, which helps the payload
 /// generator include a set of transactions which are non-conflicting with each other within a particular
 /// window size.

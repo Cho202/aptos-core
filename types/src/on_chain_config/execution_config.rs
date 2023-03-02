@@ -54,8 +54,7 @@ pub struct ExecutionConfigV1 {
 impl Default for ExecutionConfigV1 {
     fn default() -> Self {
         Self {
-            // TODO(change this to NoShuffling before landing)
-            transaction_shuffler_type: TransactionShufflerType::SenderAwareV1(32),
+            transaction_shuffler_type: TransactionShufflerType::NoShuffling,
         }
     }
 }
