@@ -9,7 +9,7 @@ When making [site updates](./site-updates.md), Aptos recommends adhering to this
 
 ## Hold contributions to high standards
 
-All doc updates should be thorough and tested. This includes external contributions from the community.
+All doc updates should be thorough and tested. This includes external contributions from the community. No exceptions.
 
 So when reviewing changes, do not merge them in unless all feedback has been addressed.
 
