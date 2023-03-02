@@ -3,7 +3,7 @@
 
 syntax = "proto3";
 
-package aptos.transaction.v1;
+package aptos.transaction.testing1.v1;
 
 import "aptos/util/timestamp/timestamp.proto";
 
@@ -45,10 +45,11 @@ message Transaction {
   uint64 block_height = 5;
 
   enum TransactionType {
-    GENESIS = 0;
-    BLOCK_METADATA = 1;
-    STATE_CHECKPOINT = 2;
-    USER = 3;
+    TRANSACTION_TYPE_UNSET = 0;
+    GENESIS = 1;
+    BLOCK_METADATA = 2;
+    STATE_CHECKPOINT = 3;
+    USER = 4;
   }
 
   TransactionType type = 6;
@@ -121,8 +122,9 @@ message UserTransactionRequest {
 message WriteSet {
 
   enum WriteSetType {
-    SCRIPT_WRITE_SET = 0;
-    DIRECT_WRITE_SET = 1;
+    WRITE_SET_TYPE_UNSET = 0;
+    SCRIPT_WRITE_SET = 1;
+    DIRECT_WRITE_SET = 2;
   }
 
   WriteSetType write_set_type = 1;
@@ -145,12 +147,13 @@ message DirectWriteSet {
 message WriteSetChange {
 
   enum Type {
-    DELETE_MODULE = 0;
-    DELETE_RESOURCE = 1;
-    DELETE_TABLE_ITEM = 2;
-    WRITE_MODULE = 3;
-    WRITE_RESOURCE = 4;
-    WRITE_TABLE_ITEM = 5;
+    TYPE_UNSET = 0;
+    DELETE_MODULE = 1;
+    DELETE_RESOURCE = 2;
+    DELETE_TABLE_ITEM = 3;
+    WRITE_MODULE = 4;
+    WRITE_RESOURCE = 5;
+    WRITE_TABLE_ITEM = 6;
   }
 
   Type type = 1;
@@ -220,11 +223,12 @@ message WriteTableItem {
 
 message TransactionPayload {
   enum Type {
-    ENTRY_FUNCTION_PAYLOAD = 0;
-    SCRIPT_PAYLOAD = 1;
-    MODULE_BUNDLE_PAYLOAD = 2;
-    WRITE_SET_PAYLOAD = 3;
-    MULTISIG_PAYLOAD = 4;
+    TYPE_UNSET = 0;
+    ENTRY_FUNCTION_PAYLOAD = 1;
+    SCRIPT_PAYLOAD = 2;
+    MODULE_BUNDLE_PAYLOAD = 3;
+    WRITE_SET_PAYLOAD = 4;
+    MULTISIG_PAYLOAD = 5;
   }
 
   Type type = 1;
@@ -262,7 +266,8 @@ message MultisigPayload {
 
 message MultisigTransactionPayload {
   enum Type {
-    ENTRY_FUNCTION_PAYLOAD = 0;
+    TYPE_UNSET = 0;
+    ENTRY_FUNCTION_PAYLOAD = 1;
   }
 
   Type type = 1;
@@ -290,9 +295,10 @@ message MoveModule {
 }
 message MoveFunction {
   enum Visibility {
-    PRIVATE = 0;
-    PUBLIC = 1;
-    FRIEND = 2;
+    VISIBILITY_UNSET = 0;
+    PRIVATE = 1;
+    PUBLIC = 2;
+    FRIEND = 3;
   }
   string name = 1;
   MoveFunction.Visibility visibility = 2;
@@ -326,20 +332,21 @@ message MoveFunctionGenericTypeParam {
 
 // Next id: 12
 enum MoveTypes {
-  Bool = 0;
-  U8 = 1;
-  U16 = 11;
-  U32 = 12;
-  U64 = 2;
-  U128 = 3;
-  U256 = 13;
-  Address = 4;
-  Signer = 5;
-  Vector = 6; // { items: Box<MoveType> },
-  Struct = 7; //(MoveStructTag),
-  GenericTypeParam = 8; // { index: u16 },
-  Reference = 9; // { mutable: bool, to: Box<MoveType> },
-  Unparsable = 10; //(String),
+  MOVE_TYPES_UNSET = 0;
+  Bool = 1;
+  U8 = 2;
+  U16 = 12;
+  U32 = 13;
+  U64 = 3;
+  U128 = 4;
+  U256 = 14;
+  Address = 5;
+  Signer = 6;
+  Vector = 7; // { items: Box<MoveType> },
+  Struct = 8; //(MoveStructTag),
+  GenericTypeParam = 9; // { index: u16 },
+  Reference = 10; // { mutable: bool, to: Box<MoveType> },
+  Unparsable = 11; //(String),
 }
 
 message MoveType{
@@ -360,10 +367,11 @@ message MoveType{
 }
 
 enum MoveAbility {
-  COPY = 0;
-  DROP = 1;
-  STORE = 2;
-  KEY = 3;
+  MOVE_ABILITY_UNSET = 0;
+  COPY = 1;
+  DROP = 2;
+  STORE = 3;
+  KEY = 4;
 }
 
 message WriteSetPayload {
@@ -390,9 +398,10 @@ message MoveStructTag {
 message Signature {
 
   enum Type {
-    ED25519 = 0;
-    MULTI_ED25519 = 1;
-    MULTI_AGENT = 2;
+    TYPE_UNSET = 0;
+    ED25519 = 1;
+    MULTI_ED25519 = 2;
+    MULTI_AGENT = 3;
   }
 
   Type type = 1;
@@ -423,8 +432,9 @@ message MultiAgentSignature {
 
 message AccountSignature {
   enum Type {
-    ED25519 = 0;
-    MULTI_ED25519 = 1;
+    TYPE_UNSET = 0;
+    ED25519 = 1;
+    MULTI_ED25519 = 2;
   }
 
   Type type = 1;
