@@ -9,7 +9,7 @@ license = "Apache-2.0"
 [tool.poetry.dependencies]
 python = ">=3.8.1,<=4"
 aptos-sdk = "^0.10.0"
-requests = "^2.31.0"
+requests = "^2.32.4"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
